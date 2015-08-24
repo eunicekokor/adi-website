@@ -224,7 +224,7 @@ class Event(db.Document):
         - ``long_description``
         - ``image``
 
-        :Returns: True if we are ready for publishing.
+        :returns: True if we are ready for publishing.
         :rtype: bool
         """
         return all([self.title,
@@ -235,6 +235,34 @@ class Event(db.Document):
                     self.short_description,
                     self.long_description,
                     self.image])
+
+    def check_completed(self):
+        """Returns which fields fields need to be completed
+        # event = Event.objects().get(id=event_id)
+        Note: required to "Create an event is the Title and the url
+        Already filled in --> short and long description, start date, end date
+
+        :returns: None if the event is ready and if not, a dict w/ current
+        contents of the event plus the needed fields of the event 
+        :rtype: dict"""
+        if(ready_for_publishing(self)):
+            return None
+        
+        needed_fields = []
+        if self.location is None:
+            needed_fields.append("location")
+        if self.image is None:
+            needed_fields.append("image")
+        if self.start_datetime == self.date_created:
+            needed_fields.append("start_datetime")
+            needed_fields.append("end_datetime")
+        if self.short_description.startswith("Short Description."):
+            needed_fields.append("short_description")
+        if self.long_description.startswith("Long Description."):
+            needed_fields.append("long_description")
+        return({"current_event:": __repr__(self),
+                "needed_fields": needed_fields
+                })
 
     def is_multiday(self):
         """Returns True if the event spans muliple days.
