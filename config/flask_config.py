@@ -41,7 +41,7 @@ kv = Consul().kv  # initalize client to KV store
 # value retrieved from Consul.
 for key, value in config.iteritems():
     try:
-        _, consul_value = kv.get(("adi-website/{}").format(key).lower())
+        _, consul_value = kv.get(("adi-website/{}").format(key))
     except requests.ConnectionError:
         raise Exception('Failed to connect to Consul.  You probably need to '
                         'run: \n\n\t./config/run_consul.sh')
@@ -52,7 +52,7 @@ for key, value in config.iteritems():
         continue
 
     # We can use the default value if it's not None
-    if value is not None:
+    if config[key] is not None:
         continue
 
     # Fail if there is value cannot be found or it is an empty string

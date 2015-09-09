@@ -100,6 +100,7 @@ class Event(db.Document):
     facebook_url = db.StringField()
     gcal_id = db.StringField()
     gcal_sequence = db.IntField()
+    missing_fields = 
 
     def get_absolute_url(self):
         """Returns the URL path that points to the client-facing version of
